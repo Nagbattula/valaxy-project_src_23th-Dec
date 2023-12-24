@@ -1,6 +1,6 @@
-def registry = 'https://pacifico.jfrog.io/'
+def registry = 'https://pacifico.jfrog.io'
 def imageName = 'pacifico.jfrog.io/artifactory/valaxy-nag-docker-local/valaxy-nag'
-def version   = '2.1.2'
+def version = '2.1.2'
 
 pipeline {
     agent {
@@ -21,11 +21,11 @@ pipeline {
                 echo "----------- build completed ----------"
             }
         }
-        stage("test"){
-            steps{
+        stage("test") {
+            steps {
                 echo "----------- unit test started ----------"
                 sh 'mvn surefire-report:report'
-                 echo "----------- unit test Complted ----------"
+                echo "----------- unit test Completed ----------"
             }
         }
 
@@ -40,11 +40,13 @@ pipeline {
             }
         }
 
-        stage("Quality Gate"){
+        stage("Quality Gate") {
             steps {
                 script {
-                   timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                    timeout(time: 1, unit: 'HOURS') {
+                        // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate()
+                        // Reuse taskId previously collected by withSonarQubeEnv
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
@@ -56,9 +58,9 @@ pipeline {
             steps {
                 script {
                     echo '<--------------- Jar Publish Started --------------->'
-                     def server = Artifactory.newServer url:registry + "/artifactory" ,  credentialsId:"jfrog-cred"
-                     def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
-                     def uploadSpec = """{
+                    def server = Artifactory.newServer url: registry, credentialsId: "jfrog-cred"
+                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
+                    def uploadSpec = """{
                           "files": [
                             {
                               "pattern": "jarstaging/(*)",
@@ -69,32 +71,32 @@ pipeline {
                             }
                          ]
                      }"""
-                     def buildInfo = server.upload(uploadSpec)
-                     buildInfo.env.collect()
-                     server.publishBuildInfo(buildInfo)
-                     echo '<--------------- Jar Publish Ended --------------->'  
+                    def buildInfo = server.upload(uploadSpec)
+                    buildInfo.env.collect()
+                    server.publishBuildInfo(buildInfo)
+                    echo '<--------------- Jar Publish Ended --------------->'
                 }
-            }   
+            }
         }
 
         stage(" Docker Build ") {
             steps {
                 script {
-            echo '<--------------- Docker Build Started --------------->'
-                    app = docker.build(imageName+":"+version)
-            echo '<--------------- Docker Build Ends --------------->'
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build("${imageName}:${version}")
+                    echo '<--------------- Docker Build Ends --------------->'
                 }
             }
         }
 
-        stage (" Docker Publish "){
+        stage(" Docker Publish ") {
             steps {
                 script {
-                    echo '<--------------- Docker Publish Started --------------->'  
-                    docker.withRegistry(registry, 'jfrog-cred'){
+                    echo '<--------------- Docker Publish Started --------------->'
+                    docker.withRegistry(registry, 'jfrog-cred') {
                         app.push()
                     }
-                    echo '<--------------- Docker Publish Ended --------------->'  
+                    echo '<--------------- Docker Publish Ended --------------->'
                 }
             }
         }
