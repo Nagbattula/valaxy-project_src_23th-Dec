@@ -21,12 +21,12 @@ pipeline {
 
     stage('SonarQube analysis') {
 
-        environment {
-            def scannerHome = tool 'sonarqube-scanner'
-        }
+    environment {
+      scannerHome = tool 'sonarqube-scanner'
+    }
         steps{
             withSonarQubeEnv('sonarqube-server') {
-            sh "${scannerHome}/bin/sonar-scanner"
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
     }
