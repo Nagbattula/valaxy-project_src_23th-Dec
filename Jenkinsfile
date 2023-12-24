@@ -1,5 +1,5 @@
 def registry = 'https://pacifico.jfrog.io'
-def imageName = 'valaxy-maven-libs-release-local/valaxy-nag'
+def imageName = 'pacifico.jfrog.io/valaxy-docker-local/ttrend'
 def version   = '2.1.2'
 
 pipeline {
@@ -100,7 +100,3 @@ pipeline {
         }
     }
 }
-
-#jfrog Artifactory URL: https://pacifico.jfrog.io
-#Artifact location: /home/ubuntu/jenkins/workspace/master_23rd_Dec-multibranch_main/jarstaging/com/valaxy/demo-workshop/2.1.2
-#jfrog-cred
