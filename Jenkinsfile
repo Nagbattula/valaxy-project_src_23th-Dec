@@ -1,5 +1,5 @@
 def registry = 'https://pacifico.jfrog.io/'
-def imageName = 'pacifico.jfrog.io/artifactory/valaxy-docker-local/'
+def imageName = 'pacifico.jfrog.io/artifactory/valaxy-docker-local/default'
 def version   = '2.1.2'
 
 pipeline {
