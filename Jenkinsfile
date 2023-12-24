@@ -1,3 +1,5 @@
+def registry = 'https://pacifico.jfrog.io/'
+
 pipeline {
     agent {
         node {
@@ -48,8 +50,6 @@ pipeline {
                 }
             }
         }
-
-             def registry = 'https://pacifico.jfrog.io/'
         stage("Jar Publish") {
             steps {
                 script {
@@ -76,10 +76,3 @@ pipeline {
         }      
     }
 }
-
-
-
-
-#https://pacifico.jfrog.io/
-#/home/ubuntu/jenkins/workspace/master_23rd_Dec-multibranch_main/jarstaging/com/valaxy/demo-workshop/2.1.2
-#jfrog-cred
