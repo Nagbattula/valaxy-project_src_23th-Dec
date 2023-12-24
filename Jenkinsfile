@@ -17,16 +17,15 @@ pipeline {
                 echo "----------- build completed ----------"
             }
         }
-    }
 
-    stage('SonarQube analysis') {
-
-    environment {
-      scannerHome = tool 'sonarqube-scanner'
-    }
-        steps{
-            withSonarQubeEnv('sonarqube-server') {
-                sh "${scannerHome}/bin/sonar-scanner"
+        stage('SonarQube analysis') {
+            steps {
+                environment {
+                    scannerHome = tool 'sonarqube-scanner'
+                }
+                withSonarQubeEnv('sonarqube-server') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
             }
         }
     }
